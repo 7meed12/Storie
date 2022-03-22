@@ -1,4 +1,5 @@
 ﻿using Models.Entities;
+using Models.Specifications;
 
 namespace Models.Interfaces
 {
@@ -6,5 +7,7 @@ namespace Models.Interfaces
     {
         Task<T> GetByIdAsync(int id);
         Task<IReadOnlyList<T>> ListAllAsync();
+        Task<T> GetEntityWithSpec(ISpecifications<T> spec);
+        Task<IReadOnlyList<T>> ListAsync(ISpecifications<T> spec);
     }
 }
