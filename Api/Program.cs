@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StoreContext>(options =>
  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
 ));
-builder.Services.AddScoped<IProductRepository,ProductRepository>();
+
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,15 +18,11 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+// seeds the json data to the database if the daabase is the empty 
 using (var scope = app.Services.CreateScope())
 {
-    
     var db = scope.ServiceProvider.GetRequiredService<StoreContext>();
-    //db.Database.Migrate();
     await Seed.SeedAsync(db);
-    
-    //app.Run();
-
 }
 
 // Configure the HTTP request pipeline.

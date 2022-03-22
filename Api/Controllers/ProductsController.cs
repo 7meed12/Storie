@@ -1,8 +1,9 @@
-﻿
+﻿ 
 using Microsoft.AspNetCore.Mvc;
 
 using Models.Entities;
 using Models.Interfaces;
+using Models.Specifications;
 
 namespace Api.Controllers
 {
@@ -23,13 +24,14 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            
-            return Ok(await _productRepo.ListAllAsync());
+            var spec = new ProductsWithTypesAndBrandsSpecification();
+            return Ok(await _productRepo.ListAsync(spec));
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProductById(int id)
         {
-          return  await _productRepo.GetByIdAsync(id);
+            var spec = new ProductsWithTypesAndBrandsSpecification(id);
+            return  await _productRepo.GetEntityWithSpec(spec);
             
         }
         [HttpGet("types")]
