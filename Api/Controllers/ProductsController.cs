@@ -1,4 +1,6 @@
-﻿ 
+﻿
+using Api.Dto;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 using Models.Entities;
@@ -11,28 +13,34 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {
-        public IGenericRepository<Product> _productRepo;
-        public IGenericRepository<ProductBrand> _brandRepo;
-        public IGenericRepository<ProductType> _typeRepo;
+        private readonly IGenericRepository<Product> _productRepo;
+        private readonly IGenericRepository<ProductBrand> _brandRepo;
+        private readonly IGenericRepository<ProductType> _typeRepo;
+        private readonly IMapper _mapper;
+
         public ProductsController(IGenericRepository<Product> ProductRepo, IGenericRepository<ProductBrand> BrandRepo,
-            IGenericRepository<ProductType> TypeRepo)
+            IGenericRepository<ProductType> TypeRepo , IMapper mapper)
         {
             _productRepo = ProductRepo;
             _brandRepo = BrandRepo;
             _typeRepo = TypeRepo;
+            _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts()
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
-            return Ok(await _productRepo.ListAsync(spec));
+            var products = await _productRepo.ListAsync(spec);
+            return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductDto>>(products)) ;
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(int id)
+        public async Task<ActionResult<ProductDto>> GetProductById(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
-            return  await _productRepo.GetEntityWithSpec(spec);
-            
+           var product =  await _productRepo.GetEntityWithSpec(spec);
+            return  _mapper.Map<Product, ProductDto>(product);
+
+
         }
         [HttpGet("types")]
         public async Task<IActionResult> GetProductTypes()
