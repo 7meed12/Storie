@@ -1,5 +1,6 @@
 ﻿
 using Api.Dto;
+using Api.Errors;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,8 @@ using Models.Specifications;
 
 namespace Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : Controller
+   
+    public class ProductsController : BaseApiController
     {
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<ProductBrand> _brandRepo;
@@ -38,6 +38,7 @@ namespace Api.Controllers
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
            var product =  await _productRepo.GetEntityWithSpec(spec);
+            if(product == null) return NotFound(new ApiResponses(404));
             return  _mapper.Map<Product, ProductDto>(product);
 
 

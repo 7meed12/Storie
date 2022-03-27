@@ -1,8 +1,10 @@
+using Api.Extensions;
 using Api.Helpers;
+using Api.Middleware;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Models.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,33 +13,33 @@ builder.Services.AddDbContext<StoreContext>(options =>
  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+
 builder.Services.AddControllers();
+builder.Services.AddApplicationServices();
+builder.Services.AddSwaggerDocumentation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 var app = builder.Build();
-// seeds the json data to the database if the daabase is the empty 
+
+// seeds the json data to the database if the database is the empty 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<StoreContext>();
     await Seed.SeedAsync(db);
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
+//ha    
+app.UseStatusCodePagesWithReExecute("/errors/{0}"); 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthorization();
-
+app.UserSwaggerDocumentaion();
 app.MapControllers();
 
 app.Run();
