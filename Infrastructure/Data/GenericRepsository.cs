@@ -13,7 +13,12 @@ namespace Infrastructure.Data
             _storeContext = storeContext;
         }
 
-      
+        public async Task<int> CountAsync(ISpecifications<T> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
+
+
         //gets the product with the same id as selected
         public async Task<T> GetByIdAsync(int id)
         {

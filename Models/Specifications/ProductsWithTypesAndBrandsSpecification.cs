@@ -6,17 +6,18 @@ namespace Models.Specifications
 {
     public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
     {
-        public ProductsWithTypesAndBrandsSpecification(string? sort, int? brandId, int? typeId):
+        public ProductsWithTypesAndBrandsSpecification(ProductSpecParams param):
             base(x=>
-                (!brandId.HasValue || x.ProductBrandId==brandId) &&
-                (!typeId.HasValue || x.ProductTypeId==typeId))
+                (!param.brandId.HasValue || x.ProductBrandId==param.brandId) &&
+                (!param.typeId.HasValue || x.ProductTypeId==param.typeId))
         {
             AddIncludes(x => x.ProductType);
             AddIncludes(x => x.ProductBrand);
             AddOrderBy(x => x.Name);
-            if(!string.IsNullOrEmpty(sort))
+            ApplyPaging(param.PageSize *(param.PageIndex-1), param.PageSize);
+            if(!string.IsNullOrEmpty(param.sort))
             {
-                switch (sort)
+                switch (param.sort)
                 {
                     case "priceAsc": AddOrderBy(x=>x.Price); break;
                     case "priceDesc": AddOrderByDesc(x => x.Price); break;

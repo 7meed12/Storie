@@ -1,6 +1,7 @@
 ﻿
 using Api.Dto;
 using Api.Errors;
+using Api.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,11 +28,15 @@ namespace Api.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts(string? sort , int? brandId , int? typeId)
+        public async Task<ActionResult<Pagination<ProductDto>>> GetProducts([FromQuery]ProductSpecParams param)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification(sort,brandId,typeId);
+            var spec = new ProductsWithTypesAndBrandsSpecification(param);
+            var count = new ProductWithFiltersCount(param);
+            var totalItems = await _productRepo.CountAsync(count);
             var products = await _productRepo.ListAsync(spec);
-            return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductDto>>(products)) ;
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+            
+            return Ok(new Pagination<ProductDto>(param.PageIndex,param.PageSize,totalItems,data));
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProductById(int id)
