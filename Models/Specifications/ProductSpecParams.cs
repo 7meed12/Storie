@@ -14,5 +14,7 @@ namespace Models.Specifications
         public int? brandId { get; set; }
         public int? typeId { get; set;}
         public string? sort { get; set; }
+        private string _search;
+        public string? Search { get => _search; set => Search = value.ToLower(); }
     }
 }

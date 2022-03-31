@@ -21,6 +21,13 @@ builder.Services.AddSwaggerDocumentation();
 builder.Services.AddEndpointsApiExplorer();
  
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddCors(opt=>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyMethod().AllowAnyMethod().WithOrigins("https://localhost:4200");
+    });
+});
 
 
 var app = builder.Build();
@@ -38,6 +45,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseStatusCodePagesWithReExecute("/errors/{0}"); 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 app.UserSwaggerDocumentaion();
 app.MapControllers();
