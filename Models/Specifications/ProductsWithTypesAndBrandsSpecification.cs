@@ -8,7 +8,7 @@ namespace Models.Specifications
     {
         public ProductsWithTypesAndBrandsSpecification(ProductSpecParams param):
             base(x=>
-                (!string.IsNullOrEmpty(param.Search) || x.Name.ToLower().Contains(param.Search))&&
+                (string.IsNullOrEmpty(param.Search) || x.Name.ToLower().Contains(param.Search))&&
                 (!param.brandId.HasValue || x.ProductBrandId==param.brandId) &&
                 (!param.typeId.HasValue || x.ProductTypeId==param.typeId))
         {
