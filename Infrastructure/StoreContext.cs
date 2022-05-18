@@ -15,23 +15,6 @@ namespace Infrastructure
         public DbSet<ProductType> ProductTypes { get; set; }
 
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Product>().HasOne(p => p.ProductBrand).WithMany()
-        //        .HasForeignKey(p => p.ProductBrandId);
-        //    modelBuilder.Entity<Product>().HasOne(p=>p.ProductType).WithMany().
-        //        HasForeignKey(p => p.ProductTypeId);
-
-        //}
-        //public List<Product> SeedTestData()
-        //{
-        //    var tests = new List<Product>();
-        //    using (StreamReader r = new StreamReader(@"../Infrastructure/Data/SeedData/products.json"))
-        //    {
-        //        string json = r.ReadToEnd();
-        //        tests = JsonConvert.DeserializeObject<List<Product>>(json);
-        //    }
-        //    return tests;
-        //}
+        
     }
 }

@@ -5,7 +5,7 @@ namespace Models.Entities
 {
     public class BaseEntity
     {
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+       
         public int Id { get; set; }
     }
 }
